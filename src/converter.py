@@ -26,6 +26,12 @@ if os.path.isfile(f"'{sourcePath}'"):
 sourceMime = magic.from_file(sourcePath, mime=True)
 success = False
 
+'''
+
+HEIC Converter
+
+'''
+
 if re.search(r'heic', sourceMime):
 	heif_file = pyheif.read_heif(sourcePath)
 	pic = Image.frombytes(heif_file.mode, heif_file.size, heif_file.data, "raw", heif_file.mode, heif_file.stride)
@@ -55,7 +61,14 @@ if re.search(r'heic', sourceMime):
 	success = True
 
 elif re.search(r'png|jpeg|gif', sourceMime):
-	# print("There is an IMAGE")
+
+'''
+
+PNG, Jpeg or Gif Converter
+
+'''
+
+
 	pic = Image.open(sourcePath)
 	width, height = pic.size
 
@@ -88,6 +101,14 @@ elif re.search(r'png|jpeg|gif', sourceMime):
 	success = True
 
 elif re.search(r'bmp', sourceMime):
+
+'''
+
+BMP Converter
+
+'''
+
+
 	pic = Image.open(sourcePath)
 	width, height = pic.size
 	
@@ -103,12 +124,13 @@ elif re.search(r'bmp', sourceMime):
 	print('{"state":true,"size":[%d,%d]}'%(width,height))
 	success = True
 elif re.search(r'pdf', sourceMime):
-	# print("There is a PDF")
-	# cmd = f'gs -dSAFER -dNOPAUSE -dBATCH -dEPSFitPage -dEPSCrop -r150 -dDEVICEWIDTHPOINTS=1200 -dDEVICEHEIGHTPOINTS=1200 -sDEVICE=pngalpha -sOutputFile={targetPath} {sourcePath}'
-	# ls = subprocess.Popen(cmd, shell=True)
-	# ls = subprocess.run(['gs', '-dSAFER', '-dNOPAUSE', '-dBATCH', '-dPDFFitPage', '-dEPSCrop', '-dDEVICEWIDTHPOINTS=1200', '-sDEVICE=pngalpha', f'-sOutputFile={targetPath}', sourcePath])
-	# img = Image.open(sourcePath)
-	# print(img.size)
+
+'''
+
+PDF Converter
+
+'''
+
 	from pdfrw import PdfReader
 	pdf = PdfReader(sourcePath)
 	
@@ -145,7 +167,14 @@ elif re.search(r'pdf', sourceMime):
 	success = True
 
 elif re.search(r'postscript|eps', sourceMime):
-	# print("There is an EPS or AI")
+
+'''
+
+EPS Converter
+
+'''
+
+
 	pic = Image.open(sourcePath)
 	width, height = pic.size
 	scale = maxSize/width
@@ -157,10 +186,7 @@ elif re.search(r'postscript|eps', sourceMime):
 		newHeight = height*scale
 	
 	newWidth = int(newWidth)
-	newHeight = int(newHeight)
-	# ls = subprocess.run(['gs', '-dSAFER', '-dNOPAUSE', '-dBATCH', '-dEPSFitPage', f'-dDEVICEWIDTHPOINTS={newWidth}', f'-dDEVICEHEIGHTPOINTS={newHeight}', '-sDEVICE=pngalpha', f'-sOutputFile={targetPath}', sourcePath], stdout=subprocess.DEVNULL)
-
-	
+	newHeight = int(newHeight)	
 
 	if outputType == 'jpg':
 		pngTmp = targetPath+".png"
@@ -176,7 +202,14 @@ elif re.search(r'postscript|eps', sourceMime):
 	success = True
 
 elif re.search(r'photoshop|psd', sourceMime):
-	# print("There is a Photoshop")
+
+'''
+
+PSD Converter
+
+'''
+
+
 	from psd_tools import PSDImage
 	psd = PSDImage.open(sourcePath)
 	compose = psd.composite()
@@ -186,7 +219,14 @@ elif re.search(r'photoshop|psd', sourceMime):
 	success = True
 
 elif re.search(r'svg', sourceMime):
-	# print("There is a SVG")
+
+'''
+
+SVG Converter
+
+'''
+
+
 	import xml.etree.ElementTree as ET
 	tree = ET.parse(sourcePath)
 	svg = tree.getroot()
@@ -225,6 +265,13 @@ elif re.search(r'svg', sourceMime):
 	print('{"state":true,"size":[%d,%d],"originalSize":[%d,%d],"mime":"%s"}'%(newWidth,newHeight,width,height,sourceMime))
 	success = True
 elif re.search(r'tiff', sourceMime):
+
+'''
+
+Tiff Converter
+
+'''
+
 	pic = Image.open(sourcePath)
 	width, height = pic.size
 
@@ -240,7 +287,20 @@ elif re.search(r'tiff', sourceMime):
 	print('{"state":true,"size":[%d,%d]}'%(width,height))
 	success = True
 else:
+
+'''
+
+Unsupported format
+
+'''
+
 	print('{"state":false,"msg":"Unsupported format %s"}'%sourceMime)
+
+'''
+
+Remove source image
+
+'''
 
 if data['removeSrc']:
 	os.remove(sourcePath)

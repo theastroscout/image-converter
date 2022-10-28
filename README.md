@@ -11,7 +11,7 @@ python3 src/convert.py -d='{JSON_DATA}'
 <br />
 
 ## Options in JSON
-```json
+```js
 {
 	"src": "/src/src_image.heic", // Path to the source image
 	"dest": "src/result_image.png", // Path to the result image
@@ -24,7 +24,7 @@ python3 src/convert.py -d='{JSON_DATA}'
 <br />
 
 ## Result in JSON
-```json
+```js
 {
 	"state": true, // True or False
 	"size":[1200,1200], // [Width, height]
